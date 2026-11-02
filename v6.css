@@ -1,0 +1,200 @@
+/* Version 6: enhancements to the original rose palette, shapes and wording. */
+
+/* Keep everything visible, even on short phones and when the font scales up. */
+.screen.playing {
+  display: block;
+  min-height: 100svh;
+  padding: 0 16px;
+  overflow: visible;
+}
+.screen.playing .intro {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  visibility: hidden;
+}
+.experience {
+  display: none;
+}
+.screen.playing .experience {
+  position: relative;
+  inset: auto;
+  display: flex;
+  width: 100%;
+  min-height: 100svh;
+  padding: 34px 0 42px;
+  opacity: 1;
+  pointer-events: auto;
+  animation: reveal-stage 1.25s ease both;
+}
+.scene {
+  flex-shrink: 0;
+  height: min(61svh, 540px);
+  transform-origin: center 75%;
+}
+.playing .scene {
+  animation: camera-pullback 12.8s ease-out both;
+}
+.playing .flower {
+  animation:
+    grow 3.8s cubic-bezier(.18,.7,.23,1) var(--delay) forwards,
+    gentle-sway 6.4s ease-in-out calc(var(--delay) + 5.8s) infinite;
+}
+.halo::after {
+  content: "";
+  position: absolute;
+  inset: 13%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #f5afc341, transparent 70%);
+  opacity: 0;
+}
+.playing .halo::after {
+  animation: last-rose-glow 6s ease 6.6s both;
+}
+
+/* The M belongs to the bouquet, not beneath the note. */
+.monogram { display: none !important; }
+.ribbon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 56px;
+  font-size: 0;
+  bottom: 9.5%;
+  z-index: 25;
+}
+.ribbon::after {
+  content: "M";
+  font: italic 500 33px/1 'Cormorant Garamond', Georgia, serif;
+  color: #ffe9e9;
+  text-shadow: 0 1px 0 #73354c, 0 0 12px #ffe0eb83;
+}
+.message {
+  width: min(100%, 520px);
+  flex-shrink: 0;
+  margin-top: 0;
+  padding-inline: 20px;
+}
+.message h2 { margin-bottom: 18px; }
+.message p.note-line { max-width: 410px; line-height: 1.87; }
+.message p.note-line.second { margin-top: 12px; }
+.message .sign { margin-top: 26px; }
+.replay { margin-top: 21px; }
+
+/* Real petals, separate from the preserved star/flower particles. */
+.petal-fall {
+  position: absolute;
+  top: -48px;
+  left: var(--left);
+  width: var(--size);
+  height: calc(var(--size) * 1.45);
+  border-radius: 78% 24% 74% 24%;
+  background: linear-gradient(140deg, #f5adc4, #b95478 70%, #6a2444);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 4;
+  box-shadow: 0 0 9px #e982a64a;
+}
+.playing .petal-fall {
+  animation: petal-drift var(--duration) linear var(--fall-delay) infinite;
+}
+.music-toggle {
+  position: fixed;
+  top: calc(16px + env(safe-area-inset-top, 0px));
+  right: calc(17px + env(safe-area-inset-right, 0px));
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 9px 14px;
+  border: 1px solid #ad73876b;
+  border-radius: 99px;
+  color: #f8d7e3;
+  font-size: 12px;
+  background: #23121fbd;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 6px 20px #0005;
+}
+.music-toggle[aria-pressed="true"] {
+  border-color: #e0a7b7a1;
+  background: #482237db;
+}
+.music-toggle:focus-visible,
+.start:focus-visible,
+.replay:focus-visible {
+  outline: 2px solid #f9c2d2;
+  outline-offset: 4px;
+}
+@keyframes reveal-stage {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes camera-pullback {
+  0% { scale: 1.085; translate: 0 4px; }
+  50% { scale: 1.065; translate: 0 1px; }
+  100% { scale: 1; translate: 0 0; }
+}
+@keyframes gentle-sway {
+  0%, 100% { transform: translateX(-50%) rotate(calc(var(--angle) - 1.25deg)) scale(var(--scale)); }
+  50% { transform: translateX(-50%) rotate(calc(var(--angle) + 1.25deg)) scale(var(--scale)); }
+}
+@keyframes last-rose-glow {
+  0% { opacity: 0; transform: scale(.8); }
+  35% { opacity: .75; transform: scale(1.13); }
+  100% { opacity: .2; transform: scale(1.02); }
+}
+@keyframes petal-drift {
+  0% { opacity: 0; transform: translate3d(0, -20px, 0) rotate(-25deg); }
+  11% { opacity: .5; }
+  82% { opacity: .47; }
+  100% { opacity: 0; transform: translate3d(var(--drift), 105svh, 0) rotate(440deg); }
+}
+@media (max-width: 480px) {
+  .screen.playing { padding-inline: 9px; }
+  .screen.playing .experience { padding: 56px 0 40px; }
+  .scene {
+    height: min(54svh, 480px);
+    min-height: 280px;
+  }
+  .message { padding-inline: 17px; }
+  .message h2 { font-size: clamp(37px, 8vw, 49px); }
+  .message p.note-line { font-size: 14px; }
+}
+@media (max-height: 740px) {
+  .screen.playing .experience { padding-bottom: 28px; }
+  .scene { margin: -38px 0; }
+  .message { margin-top: 0; }
+}
+@media (max-width: 370px) {
+  .message h2 { font-size: 35px; }
+  .message p.note-line { font-size: 13px; }
+  .music-toggle { padding: 9px 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .screen.playing .experience,
+  .playing .scene { animation: none; }
+  .playing .flower {
+    animation: none;
+    opacity: 1;
+    transform: translateX(-50%) rotate(var(--angle)) scale(var(--scale));
+  }
+  .playing .petal {
+    animation: none;
+    opacity: 1;
+    transform: translateX(-50%) rotate(var(--rot)) translateY(var(--out)) scale(1);
+  }
+  .playing .wrap, .playing .ribbon {
+    animation: none;
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+  .playing .message {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .playing .message .sign { animation: none; opacity: 1; }
+  .petal-fall, .float { display: none; }
+}
